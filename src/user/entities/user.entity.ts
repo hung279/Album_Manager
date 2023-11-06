@@ -21,4 +21,10 @@ export class User extends BaseEntity {
     default: 'inactive',
   })
   status: string;
+
+  @Column({
+    name: 'verify_token',
+    nullable: true,
+  })
+  verifyToken: string;
 }
