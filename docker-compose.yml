@@ -1,0 +1,10 @@
+services:
+  postgres_album:
+    image: postgres
+    environment:
+      - POSTGRES_DB=album_manager
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=hungyb123
+    ports:
+      - "5439:5432"
+    restart: on-failure
