@@ -1,6 +1,7 @@
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Status } from 'src/common/enums/status-user.enum';
-import { Column, Entity } from 'typeorm';
+import { Photo } from 'src/photo/photo.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
@@ -22,6 +23,9 @@ export class User extends BaseEntity {
     default: Status.INACTIVE,
   })
   status: string;
+
+  @OneToMany(() => Photo, (photo) => photo.user)
+  photos: Photo[];
 
   @Column({
     name: 'verify_token',
