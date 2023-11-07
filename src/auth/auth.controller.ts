@@ -4,6 +4,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { ResponeLogin } from './interface/respone-login.interface';
 @ApiTags('Auth')
 @Controller('api/v1/auth')
 export class AuthController {
@@ -20,7 +21,7 @@ export class AuthController {
   }
 
   @Post('login')
-  async signIn(@Body() signInDto: SignInDto): Promise<string> {
+  async signIn(@Body() signInDto: SignInDto): Promise<ResponeLogin> {
     return this.authService.signIn(signInDto);
   }
 }

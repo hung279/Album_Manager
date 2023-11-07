@@ -6,11 +6,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { SignInDto } from './dto/sign-in.dto';
+import { JwtService } from '@nestjs/jwt';
+import { PayloadToken } from './interface/payload-token.interface';
+import { ResponeLogin } from './interface/respone-login.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
+    private jwtService: JwtService,
+    private configService: ConfigService,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
@@ -49,7 +55,7 @@ export class AuthService {
     });
   }
 
-  async signIn(signInDto: SignInDto): Promise<string> {
+  async signIn(signInDto: SignInDto): Promise<ResponeLogin> {
     const { username, password } = signInDto;
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -62,6 +68,23 @@ export class AuthService {
       throw new BadRequestException('Username or password invalid');
     }
 
-    return 'token';
+    const payload = { userId: user.id };
+    const accessToken = await this.generateToken(payload);
+
+    return {
+      accessToken,
+    };
+  }
+
+  async generateToken(payload: PayloadToken): Promise<string> {
+    const secret = this.configService.get('jwt.secret');
+    const expiresIn = this.configService.get('jwt.expiresIn');
+
+    const options = {
+      secret,
+      expiresIn,
+    };
+
+    return this.jwtService.signAsync(payload, options);
   }
 }
