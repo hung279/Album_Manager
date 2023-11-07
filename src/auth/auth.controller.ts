@@ -2,7 +2,9 @@ import { Body, Controller, Post, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
-
+import { SignInDto } from './dto/sign-in.dto';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Auth')
 @Controller('api/v1/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -15,5 +17,10 @@ export class AuthController {
   @Post('confirm-email')
   async confirmEmail(@Query() confirmEmail: ConfirmEmailDto) {
     return this.authService.confirmEmail(confirmEmail.verifyToken);
+  }
+
+  @Post('login')
+  async signIn(@Body() signInDto: SignInDto): Promise<string> {
+    return this.authService.signIn(signInDto);
   }
 }

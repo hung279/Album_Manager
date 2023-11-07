@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Injectable()
 export class AuthService {
@@ -46,5 +47,21 @@ export class AuthService {
       status: 'active',
       verifyToken: null,
     });
+  }
+
+  async signIn(signInDto: SignInDto): Promise<string> {
+    const { username, password } = signInDto;
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.username = :username OR user.email = :username', {
+        username,
+      })
+      .getOne();
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new BadRequestException('Username or password invalid');
+    }
+
+    return 'token';
   }
 }
