@@ -7,7 +7,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { UserService } from 'src/user/user.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { LessThan, Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
 import { PayloadToken } from './interface/payload-token.interface';
@@ -17,9 +17,8 @@ import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import * as bcrypt from 'bcrypt';
-import sha256 from 'crypto-js/sha256';
+import * as crypto from 'crypto';
 import { Status } from 'src/common/enums/status-user.enum';
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -105,8 +104,12 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    const passwordResetToken = sha256(user.email);
-    const passwordResetExpires = this.configService.get('reset_pass.expires');
+    const passwordResetToken = crypto
+      .createHash('sha256')
+      .update(user.email)
+      .digest('hex');
+
+    const passwordResetExpires = this.configService.get('reset_pass.expiresIn');
 
     await this.userRepository.update(user.id, {
       passwordResetToken,
@@ -118,7 +121,7 @@ export class AuthService {
     const { password, token } = resetPasswordDto;
     const userForgot = await this.userService.findOne({
       passwordResetToken: token,
-      passwordResetExpires: LessThan(Date.now()),
+      passwordResetExpires: MoreThan(Date.now()),
     });
 
     if (!userForgot) {
