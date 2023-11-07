@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
@@ -16,8 +16,8 @@ export class AuthController {
   }
 
   @Post('confirm-email')
-  async confirmEmail(@Query() confirmEmail: ConfirmEmailDto) {
-    return this.authService.confirmEmail(confirmEmail.verifyToken);
+  async confirmEmail(@Body() confirmEmail: ConfirmEmailDto) {
+    return this.authService.confirmEmail(confirmEmail);
   }
 
   @Post('login')

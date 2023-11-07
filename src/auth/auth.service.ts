@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PayloadToken } from './interface/payload-token.interface';
 import { ResponeLogin } from './interface/respone-login.interface';
 import { ConfigService } from '@nestjs/config';
+import { ConfirmEmailDto } from './dto/confirm-email.dto';
 
 @Injectable()
 export class AuthService {
@@ -42,8 +43,11 @@ export class AuthService {
     // TODO something
   }
 
-  async confirmEmail(verifyToken: string): Promise<void> {
-    const user = await this.userRepository.findOne({ where: { verifyToken } });
+  async confirmEmail(confirmEmailDto: ConfirmEmailDto): Promise<void> {
+    const { email, verifyToken } = confirmEmailDto;
+    const user = await this.userRepository.findOne({
+      where: { email, verifyToken },
+    });
 
     if (!user) {
       throw new BadRequestException('Verify token invalid');
