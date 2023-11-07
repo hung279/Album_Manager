@@ -1,4 +1,4 @@
-import { Album } from 'src/album/album.entity';
+import { Album } from 'src/album/entities/album.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';

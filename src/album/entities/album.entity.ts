@@ -1,5 +1,5 @@
 import { BaseEntity } from 'src/common/entities/base.entity';
-import { Photo } from 'src/photo/photo.entity';
+import { Photo } from 'src/photo/entities/photo.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 

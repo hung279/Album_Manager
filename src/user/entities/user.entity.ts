@@ -1,6 +1,6 @@
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Status } from 'src/common/enums/status-user.enum';
-import { Photo } from 'src/photo/photo.entity';
+import { Photo } from 'src/photo/entities/photo.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
