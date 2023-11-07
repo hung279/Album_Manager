@@ -18,6 +18,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import * as bcrypt from 'bcrypt';
 import sha256 from 'crypto-js/sha256';
+import { Status } from 'src/common/enums/status-user.enum';
 
 @Injectable()
 export class AuthService {
@@ -61,7 +62,7 @@ export class AuthService {
     }
 
     await this.userRepository.update(user.id, {
-      status: 'active',
+      status: Status.ACTIVE,
       verifyToken: null,
     });
   }
