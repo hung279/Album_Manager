@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { EntityCondition } from 'src/common/types/entity-condition.type';
 
 @Injectable()
 export class UserService {
@@ -13,18 +14,10 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     return this.userRepository.save(this.userRepository.create(createUserDto));
   }
-  async findByUsernameOrEmail(
-    username: string,
-    email: string,
-  ): Promise<User | null> {
-    const user = await this.userRepository
-      .createQueryBuilder('user')
-      .where('user.username = :username OR user.email = :email', {
-        username,
-        email,
-      })
-      .getOne();
 
-    return user;
+  async findOne(fields: EntityCondition<User>): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: fields,
+    });
   }
 }
