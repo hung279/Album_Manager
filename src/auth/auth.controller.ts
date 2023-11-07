@@ -5,6 +5,8 @@ import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ResponeLogin } from './interface/respone-login.interface';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 @ApiTags('Auth')
 @Controller('api/v1/auth')
 export class AuthController {
@@ -23,5 +25,15 @@ export class AuthController {
   @Post('login')
   async signIn(@Body() signInDto: SignInDto): Promise<ResponeLogin> {
     return this.authService.signIn(signInDto);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 }
