@@ -11,6 +11,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { User } from 'src/user/entities/user.entity';
 import { UserRequest } from 'src/common/decorators/user-request.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 @ApiTags('Auth')
 @Controller('api/v1/auth')
 export class AuthController {
@@ -54,5 +55,14 @@ export class AuthController {
     @Body() updateProfileDto: UpdateProfileDto,
   ): Promise<User> {
     return this.authService.updateProfile(userId, updateProfileDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch('change-password')
+  async changePassword(
+    @UserRequest() userId,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ): Promise<void> {
+    return this.authService.changePassword(userId, changePasswordDto);
   }
 }

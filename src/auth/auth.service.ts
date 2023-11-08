@@ -20,6 +20,7 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Status } from 'src/common/enums/status-user.enum';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -148,5 +149,26 @@ export class AuthService {
     await this.userRepository.update(userId, updateProfileDto);
 
     return this.userService.findOne({ id: userId });
+  }
+
+  async changePassword(
+    userId: string,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<void> {
+    const { newPassword, oldPassword } = changePasswordDto;
+    const currentUser = await this.userService.findOne({ id: userId });
+
+    const isValidOldPass = await bcrypt.compare(
+      oldPassword,
+      currentUser.password,
+    );
+
+    if (!isValidOldPass) {
+      throw new BadRequestException('Old password is incorrect');
+    }
+
+    await this.userRepository.update(userId, {
+      password: await bcrypt.hash(newPassword, 7),
+    });
   }
 }
