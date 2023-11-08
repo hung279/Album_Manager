@@ -19,6 +19,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Status } from 'src/common/enums/status-user.enum';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -134,5 +135,18 @@ export class AuthService {
       passwordResetToken: null,
       passwordResetExpires: null,
     });
+  }
+
+  async getMe(userId: string): Promise<User> {
+    return this.userService.findOne({ id: userId });
+  }
+
+  async updateProfile(
+    userId: string,
+    updateProfileDto: UpdateProfileDto,
+  ): Promise<User> {
+    await this.userRepository.update(userId, updateProfileDto);
+
+    return this.userService.findOne({ id: userId });
   }
 }
