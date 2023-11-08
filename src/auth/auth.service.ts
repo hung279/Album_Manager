@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { SignUpDto } from './dto/sign-up.dto';
 import { UserService } from 'src/user/user.service';
@@ -79,6 +80,10 @@ export class AuthService {
       throw new BadRequestException('Username or password invalid');
     }
 
+    if (user.status === Status.INACTIVE) {
+      throw new UnauthorizedException('Account has not verified');
+    }
+    
     const payload = { userId: user.id };
     const accessToken = await this.generateToken(payload);
 
