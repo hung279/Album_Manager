@@ -12,6 +12,7 @@ import { Album } from './entities/album.entity';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UserRequest } from 'src/common/decorators/user-request.decorator';
 
 @ApiTags('Album')
 @Controller('api/v1/albums')
@@ -24,8 +25,11 @@ export class AlbumController {
   }
 
   @Post()
-  async createAlbum(@Body() createAlbumDto: CreateAlbumDto): Promise<Album> {
-    return this.albumService.createAlbum(createAlbumDto);
+  async createAlbum(
+    @UserRequest() userId,
+    @Body() createAlbumDto: CreateAlbumDto,
+  ): Promise<Album> {
+    return this.albumService.createAlbum(userId, createAlbumDto);
   }
 
   @Patch(':id')

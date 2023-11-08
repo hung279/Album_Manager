@@ -5,17 +5,34 @@ import { Repository } from 'typeorm';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { EntityCondition } from 'src/common/types/entity-condition.type';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AlbumService {
   constructor(
     @InjectRepository(Album) private albumRepository: Repository<Album>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async createAlbum(createAlbumDto: CreateAlbumDto): Promise<Album> {
-    return this.albumRepository.save(
-      this.albumRepository.create(createAlbumDto),
-    );
+  async createAlbum(
+    userId: string,
+    createAlbumDto: CreateAlbumDto,
+  ): Promise<Album> {
+    const album = this.albumRepository.create(createAlbumDto);
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    album.users = [user];
+
+    await this.albumRepository.save(album);
+
+    return album;
   }
 
   async getAllAlbums(): Promise<Album[]> {
