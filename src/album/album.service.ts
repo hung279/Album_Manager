@@ -58,4 +58,24 @@ export class AlbumService {
   async softDelete(id: string): Promise<void> {
     await this.albumRepository.softDelete(id);
   }
+
+  async joinAlbum(userId: string, albumId: string): Promise<Album> {
+    const album = await this.albumRepository.findOne({
+      where: { id: albumId },
+      relations: ['users'],
+    });
+
+    if (!album) {
+      throw new NotFoundException('Album not found');
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    album.users.push(user);
+    await this.albumRepository.save(album);
+
+    return album;
+  }
 }

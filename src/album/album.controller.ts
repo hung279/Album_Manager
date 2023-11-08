@@ -13,6 +13,7 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UserRequest } from 'src/common/decorators/user-request.decorator';
+import { JoinAlbumDto } from './dto/join-album.dto';
 
 @ApiTags('Album')
 @Controller('api/v1/albums')
@@ -43,5 +44,13 @@ export class AlbumController {
   @Delete(':id')
   async deleteAlbum(@Param('id') id: string): Promise<void> {
     await this.albumService.softDelete(id);
+  }
+
+  @Post('join')
+  async joinAlbum(
+    @UserRequest() userId,
+    @Body() joinAlbumDto: JoinAlbumDto,
+  ): Promise<Album> {
+    return this.albumService.joinAlbum(userId, joinAlbumDto.albumId);
   }
 }
