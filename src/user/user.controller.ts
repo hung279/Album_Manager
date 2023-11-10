@@ -28,6 +28,11 @@ export class UserController {
     return this.userService.createUser(createUserDto);
   }
 
+  @Get(':id')
+  async getUser(@Param('id') id: string): Promise<User> {
+    return this.userService.findOne({ id });
+  }
+
   @Patch(':id')
   async updateUser(
     @Param('id') id: string,
