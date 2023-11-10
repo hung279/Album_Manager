@@ -3,11 +3,12 @@ import * as Joi from 'joi';
 export default () => ({
   port: process.env.PORT || 8000,
   database: {
-    host: process.env.POSTGRES_HOST,
-    port: process.env.POSTGRES_PORT,
-    username: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DB,
+    type: process.env.DATABASE_TYPE,
+    host: process.env.DATABASE_HOST,
+    port: process.env.DATABASE_PORT,
+    username: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    databaseName: process.env.DATABASE_NAME,
   },
   jwt: {
     secret: process.env.JWT_SECRET_KEY,
@@ -23,4 +24,10 @@ export const configValidationSchema = Joi.object({
   JWT_SECRET_KEY: Joi.string().required(),
   JWT_EXPIRES_IN: Joi.string().required(),
   RESET_PASSWORD_EXPIRES: Joi.number().required(),
+  DATABASE_TYPE: Joi.string().required(),
+  DATABASE_HOST: Joi.string().required(),
+  DATABASE_PORT: Joi.number().required(),
+  DATABASE_USER: Joi.string().required(),
+  DATABASE_PASSWORD: Joi.string().required(),
+  DATABASE_NAME: Joi.string().required(),
 });
