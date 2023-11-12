@@ -12,7 +12,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       port: this.configService.get('database.port', { infer: true }),
       username: this.configService.get('database.username', { infer: true }),
       password: this.configService.get('database.password', { infer: true }),
-      database: this.configService.get('datbase.databaseName', {
+      database: this.configService.get('database.databaseName', {
         infer: true,
       }),
       entities: [__dirname + '/../**/entities/*.entity.ts'],
