@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { PhotoModule } from './photo/photo.module';
 import { AlbumModule } from './album/album.module';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
+import { FollowModule } from './follow/follow.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { TypeOrmConfigService } from './database/typeorm-config.service';
     AuthModule,
     PhotoModule,
     AlbumModule,
+    FollowModule,
   ],
   controllers: [],
   providers: [],

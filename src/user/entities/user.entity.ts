@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Status } from 'src/common/enums/status-user.enum';
+import { Follow } from 'src/follow/entities/follow.entity';
 import { Photo } from 'src/photo/entities/photo.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
@@ -26,6 +27,12 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Photo, (photo) => photo.user)
   photos: Photo[];
+
+  @OneToMany(() => Follow, (follow) => follow.following)
+  followings: Follow[];
+
+  @OneToMany(() => Follow, (follow) => follow.follower)
+  followers: Follow[];
 
   @Column({
     name: 'verify_token',
