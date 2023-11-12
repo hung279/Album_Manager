@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { Album } from './entities/album.entity';
@@ -14,6 +15,10 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UserRequest } from 'src/common/decorators/user-request.decorator';
 import { JoinAlbumDto } from './dto/join-album.dto';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { RoleGuard } from 'src/auth/guards/role.guard';
+import { Roles } from 'src/common/decorators/role.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Album')
 @Controller('api/v1/albums')
@@ -46,11 +51,13 @@ export class AlbumController {
     await this.albumService.softDelete(id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.User)
   @Post('join')
   async joinAlbum(
-    @UserRequest() userId,
+    @UserRequest() user,
     @Body() joinAlbumDto: JoinAlbumDto,
   ): Promise<Album> {
-    return this.albumService.joinAlbum(userId, joinAlbumDto.albumId);
+    return this.albumService.joinAlbum(user.userId, joinAlbumDto.albumId);
   }
 }

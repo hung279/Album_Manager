@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Album } from './entities/album.entity';
 import { Repository } from 'typeorm';
@@ -69,13 +73,34 @@ export class AlbumService {
       throw new NotFoundException('Album not found');
     }
 
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
+    const user = await this.hasUserExistedAlbum(userId, album);
 
     album.users.push(user);
     await this.albumRepository.save(album);
 
     return album;
+  }
+
+  private async hasUserExistedAlbum(
+    userId: string,
+    album: Album,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const checkUserExistedAlbum = album.users.some(
+      (user) => user.id === userId,
+    );
+
+    if (checkUserExistedAlbum) {
+      throw new BadRequestException('User has existed in this album');
+    }
+
+    return user;
   }
 }
