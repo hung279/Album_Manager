@@ -83,7 +83,7 @@ export class AuthService {
     if (user.status === Status.INACTIVE) {
       throw new UnauthorizedException('Account has not verified');
     }
-    
+
     const payload = { userId: user.id };
     const accessToken = await this.generateToken(payload);
 
