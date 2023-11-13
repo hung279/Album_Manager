@@ -101,4 +101,17 @@ export class AlbumService {
 
     return user.albums.some((album) => album.id === albumId);
   }
+
+  async getAlbumsUser(userId: string): Promise<Album[]> {
+    const userHasAlbums = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.albums', 'album')
+      .groupBy('user.id')
+      .addGroupBy('album.id')
+      .having('user.id = :userId', { userId })
+      .getOne();
+
+    const albums = userHasAlbums.albums;
+    return albums;
+  }
 }

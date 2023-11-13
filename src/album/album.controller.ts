@@ -62,4 +62,11 @@ export class AlbumController {
   ): Promise<Album> {
     return this.albumService.joinAlbum(user.userId, joinAlbumDto.albumId);
   }
+
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.User)
+  @Get('user')
+  async getAlbumUser(@UserRequest() user): Promise<Album[]> {
+    return this.albumService.getAlbumsUser(user.userId);
+  }
 }
