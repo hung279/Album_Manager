@@ -17,5 +17,6 @@ import { JwtModule } from '@nestjs/jwt';
   ],
   providers: [AlbumService],
   controllers: [AlbumController],
+  exports: [AlbumService],
 })
 export class AlbumModule {}

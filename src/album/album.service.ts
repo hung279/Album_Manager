@@ -90,10 +90,7 @@ export class AlbumService {
     return album;
   }
 
-  private async hasUserExistedAlbum(
-    userId: string,
-    albumId: string,
-  ): Promise<boolean> {
+  async hasUserExistedAlbum(userId: string, albumId: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['albums'],
