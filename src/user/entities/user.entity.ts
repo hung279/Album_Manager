@@ -1,8 +1,9 @@
+import { Album } from 'src/album/entities/album.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Status } from 'src/common/enums/status-user.enum';
 import { Follow } from 'src/follow/entities/follow.entity';
 import { Photo } from 'src/photo/entities/photo.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
@@ -33,6 +34,12 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Follow, (follow) => follow.follower)
   followers: Follow[];
+
+  @ManyToMany(() => Album, (album) => album.users)
+  @JoinTable({
+    name: 'user_album',
+  })
+  albums: Album[];
 
   @Column({
     name: 'verify_token',

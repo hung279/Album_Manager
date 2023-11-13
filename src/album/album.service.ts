@@ -22,19 +22,20 @@ export class AlbumService {
     userId: string,
     createAlbumDto: CreateAlbumDto,
   ): Promise<Album> {
-    const album = this.albumRepository.create(createAlbumDto);
+    const album = await this.albumRepository.save(createAlbumDto);
 
     const user = await this.userRepository.findOne({
       where: { id: userId },
+      relations: ['albums'],
     });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    album.users = [user];
+    user.albums.push(album);
 
-    await this.albumRepository.save(album);
+    await this.userRepository.save(user);
 
     return album;
   }
@@ -66,41 +67,38 @@ export class AlbumService {
   async joinAlbum(userId: string, albumId: string): Promise<Album> {
     const album = await this.albumRepository.findOne({
       where: { id: albumId },
-      relations: ['users'],
     });
 
     if (!album) {
       throw new NotFoundException('Album not found');
     }
 
-    const user = await this.hasUserExistedAlbum(userId, album);
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['albums'],
+    });
 
-    album.users.push(user);
-    await this.albumRepository.save(album);
+    const hasUserExisted = await this.hasUserExistedAlbum(user.id, albumId);
+
+    if (hasUserExisted) {
+      throw new BadRequestException('User has existed in this ablum');
+    }
+
+    user.albums.push(album);
+    await this.userRepository.save(user);
 
     return album;
   }
 
   private async hasUserExistedAlbum(
     userId: string,
-    album: Album,
-  ): Promise<User> {
+    albumId: string,
+  ): Promise<boolean> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
+      relations: ['albums'],
     });
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    const checkUserExistedAlbum = album.users.some(
-      (user) => user.id === userId,
-    );
-
-    if (checkUserExistedAlbum) {
-      throw new BadRequestException('User has existed in this album');
-    }
-
-    return user;
+    return user.albums.some((album) => album.id === albumId);
   }
 }

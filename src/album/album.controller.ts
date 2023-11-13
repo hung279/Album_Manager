@@ -30,12 +30,14 @@ export class AlbumController {
     return this.albumService.getAllAlbums();
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.User)
   @Post()
   async createAlbum(
-    @UserRequest() userId,
+    @UserRequest() user,
     @Body() createAlbumDto: CreateAlbumDto,
   ): Promise<Album> {
-    return this.albumService.createAlbum(userId, createAlbumDto);
+    return this.albumService.createAlbum(user.userId, createAlbumDto);
   }
 
   @Patch(':id')
